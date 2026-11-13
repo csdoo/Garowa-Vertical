@@ -257,9 +257,20 @@
     const submit = document.getElementById('submit');
     let current = 0;
 
-    // Recupera as respostas salvas quando a pessoa volta da página de revisão.
-    try {
-      const saved = JSON.parse(sessionStorage.getItem('garowaBriefingAnswers') || '{}');
+    // Recupera as respostas guardadas quando a pessoa volta da revisão.
+    function readSavedAnswers() {
+      try {
+        return JSON.parse(
+          localStorage.getItem('garowaBriefingAnswers') ||
+          sessionStorage.getItem('garowaBriefingAnswers') || '{}'
+        );
+      } catch (error) {
+        return {};
+      }
+    }
+
+    function restoreAnswers() {
+      const saved = readSavedAnswers();
       [...form.elements].forEach((field) => {
         if (!field.name || !Object.prototype.hasOwnProperty.call(saved, field.name)) return;
         const values = Array.isArray(saved[field.name]) ? saved[field.name] : [saved[field.name]];
@@ -269,9 +280,27 @@
           field.value = values[0] || '';
         }
       });
-    } catch (error) {
-      console.warn('Não foi possível recuperar as respostas salvas.', error);
     }
+
+    function collectAnswers() {
+      const answers = {};
+      for (const [key, value] of new FormData(form).entries()) {
+        if (!answers[key]) answers[key] = [];
+        answers[key].push(value);
+      }
+      return answers;
+    }
+
+    function saveAnswers() {
+      const answers = collectAnswers();
+      const serialized = JSON.stringify(answers);
+      try { localStorage.setItem('garowaBriefingAnswers', serialized); } catch (error) {}
+      try { sessionStorage.setItem('garowaBriefingAnswers', serialized); } catch (error) {}
+    }
+
+    restoreAnswers();
+    form.addEventListener('input', saveAnswers);
+    form.addEventListener('change', saveAnswers);
 
     function showStep(index) {
       current = index;
@@ -302,12 +331,7 @@
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       if (!validateCurrent()) return;
-      const answers = {};
-      for (const [key, value] of new FormData(form).entries()) {
-        if (!answers[key]) answers[key] = [];
-        answers[key].push(value);
-      }
-      sessionStorage.setItem('garowaBriefingAnswers', JSON.stringify(answers));
+      saveAnswers();
       submit.disabled = true;
       submit.textContent = 'Abrindo suas respostas...';
       window.location.replace('https://csdoo.github.io/Garowa-Vertical/respostas/');
