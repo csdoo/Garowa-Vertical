@@ -257,6 +257,22 @@
     const submit = document.getElementById('submit');
     let current = 0;
 
+    // Recupera as respostas salvas quando a pessoa volta da página de revisão.
+    try {
+      const saved = JSON.parse(sessionStorage.getItem('garowaBriefingAnswers') || '{}');
+      [...form.elements].forEach((field) => {
+        if (!field.name || !Object.prototype.hasOwnProperty.call(saved, field.name)) return;
+        const values = Array.isArray(saved[field.name]) ? saved[field.name] : [saved[field.name]];
+        if (field.type === 'radio' || field.type === 'checkbox') {
+          field.checked = values.includes(field.value);
+        } else if (field.tagName === 'SELECT' || field.type === 'text' || field.type === 'email' || field.tagName === 'TEXTAREA') {
+          field.value = values[0] || '';
+        }
+      });
+    } catch (error) {
+      console.warn('Não foi possível recuperar as respostas salvas.', error);
+    }
+
     function showStep(index) {
       current = index;
       steps.forEach((step, i) => step.classList.toggle('active', i === current));
