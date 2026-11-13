@@ -108,11 +108,7 @@
       <div class="track"><div class="bar" id="progress"></div></div>
     </div>
 
-    <form id="briefing" action="https://formsubmit.co/catasimonato@gmail.com" method="POST">
-      <input type="hidden" name="_subject" value="Novo briefing de site — Garowa Vertical">
-      <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_captcha" value="true">
-      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+    <form id="briefing">
 
       <section class="step active">
         <p class="step-kicker">01 / Empresa</p><h2>Primeiro, vamos falar sobre a Garowa.</h2>
@@ -288,12 +284,17 @@
     });
     back.addEventListener('click', () => showStep(Math.max(current - 1, 0)));
     form.addEventListener('submit', (event) => {
-      if (!validateCurrent()) {
-        event.preventDefault();
-        return;
+      event.preventDefault();
+      if (!validateCurrent()) return;
+      const answers = {};
+      for (const [key, value] of new FormData(form).entries()) {
+        if (!answers[key]) answers[key] = [];
+        answers[key].push(value);
       }
+      sessionStorage.setItem('garowaBriefingAnswers', JSON.stringify(answers));
       submit.disabled = true;
-      submit.textContent = 'Enviando...';
+      submit.textContent = 'Preparando respostas...';
+      window.location.href = '../respostas/';
     });
     showStep(0);
   </script>
