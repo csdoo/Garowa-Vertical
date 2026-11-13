@@ -32,12 +32,11 @@ footer{display:flex;justify-content:space-between;gap:16px;margin-top:24px;color
 <header><div class="brand">GAROWA <span>VERTICAL</span></div><div class="header-note">Briefing de projeto · 2026</div></header>
 <p class="eyebrow">Briefing concluído</p>
 <h1>Suas respostas<br>estão prontas.</h1>
-<p class="lead">Revise as informações abaixo. Você pode salvar uma cópia em PDF ou abrir seu aplicativo de e-mail com as respostas organizadas para enviar à equipe responsável.</p>
-<div class="notice">Importante: suas respostas ficam temporariamente nesta página e não são enviadas automaticamente. Para concluir, envie o e-mail pelo botão abaixo. Recomendamos também salvar uma cópia em PDF.</div>
+<p class="lead">Revise suas respostas e baixe o arquivo em PDF. Depois, encaminhe o documento para a equipe da Garowa Vertical pelo WhatsApp ou por e-mail.</p>
+<div class="notice">Para concluir o briefing, clique em “Baixar respostas em PDF” e envie o arquivo para <a href="https://wa.me/5511977819698" target="_blank" rel="noopener">(11) 97781-9698 pelo WhatsApp</a> ou para <a href="mailto:catasimonato@gmail.com">catasimonato@gmail.com</a>. Suas respostas não são enviadas automaticamente.</div>
 <section class="answers" id="answers"><div class="empty">Carregando suas respostas…</div></section>
 <div class="actions">
-<button class="primary" id="email">Enviar respostas por e-mail ↗</button>
-<button class="secondary" id="pdf">Baixar respostas em PDF ↓</button>
+<button class="primary" id="pdf">Baixar respostas em PDF ↓</button>
 </div>
 <footer><div>As informações serão utilizadas exclusivamente para compreender o projeto e preparar uma proposta.</div><div>GAROWA VERTICAL · BRIEFING</div></footer>
 </main>
@@ -50,7 +49,6 @@ try { answers = raw ? JSON.parse(raw) : {}; } catch(e) { answers = {}; }
 const entries = Object.entries(answers).filter(([key]) => key.trim());
 if (!entries.length) {
   container.innerHTML = '<div class="empty">Não encontramos respostas nesta sessão. Volte ao formulário e preencha novamente para gerar seu resumo.</div>';
-  document.getElementById('email').disabled = true;
   document.getElementById('pdf').disabled = true;
 } else {
   container.innerHTML = entries.map(([question, values]) => {
@@ -62,14 +60,6 @@ if (!entries.length) {
     el.querySelector('.value').textContent = (entries[i][1] || []).join(', ');
   });
 }
-function emailBody() {
-  return entries.map(([question, values]) => question + ':\n' + (values || []).join(', ')).join('\n\n');
-}
-document.getElementById('email').addEventListener('click', () => {
-  const subject = 'Briefing de site — Garowa Vertical';
-  const url = 'mailto:' + recipient + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(emailBody());
-  window.location.href = url;
-});
 document.getElementById('pdf').addEventListener('click', () => window.print());
 </script>
 </body>
