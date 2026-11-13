@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f4f0">
+  <meta name="description" content="Briefing de projeto — Garowa Vertical.">
+  <title>Briefing de projeto | Garowa Vertical</title>
+  <style>
+    :root {
+      --paper: #f5f4f0;
+      --surface: #fff;
+      --ink: #191919;
+      --muted: #77766f;
+      --line: #deddd7;
+      --accent: #262622;
+      --soft: #ecebe5;
+      --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; background: var(--paper); color: var(--ink);
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .shell { width: min(100% - 36px, 760px); margin: 0 auto; padding: 42px 0 64px; }
+    header { display:flex; justify-content:space-between; align-items:center; gap:16px; margin-bottom:62px; }
+    .brand { font-size:13px; font-weight:750; letter-spacing:.14em; text-transform:uppercase; }
+    .brand span { display:block; color:var(--muted); font-size:10px; font-weight:500; letter-spacing:.19em; margin-top:5px; }
+    .header-note { color:var(--muted); font-size:11px; letter-spacing:.1em; text-transform:uppercase; }
+    .intro { margin-bottom:36px; }
+    .eyebrow { font-size:11px; letter-spacing:.17em; text-transform:uppercase; color:var(--muted); margin:0 0 18px; }
+    h1 { font-size:clamp(38px, 7vw, 64px); line-height:.99; letter-spacing:-.055em; font-weight:550; margin:0; max-width:650px; }
+    .lead { color:#64635d; font-size:15px; line-height:1.7; max-width:570px; margin:22px 0 0; }
+    .meta { display:flex; gap:22px; flex-wrap:wrap; color:var(--muted); font-size:12px; margin-top:28px; }
+    .meta span::before { content:""; display:inline-block; width:5px; height:5px; border-radius:50%; background:#9c9b93; margin:0 8px 2px 0; }
+    .progress-wrap { margin:36px 0 24px; }
+    .progress-top { display:flex; justify-content:space-between; color:var(--muted); font-size:11px; margin-bottom:10px; letter-spacing:.04em; }
+    .track { height:3px; background:#e0dfd9; overflow:hidden; border-radius:9px; }
+    .bar { width:16.666%; height:100%; background:var(--ink); transition:width .25s ease; }
+    form { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:clamp(22px, 5vw, 42px); }
+    .step { display:none; }
+    .step.active { display:block; animation:fade .22s ease; }
+    @keyframes fade { from { opacity:.35; transform:translateY(5px); } to { opacity:1; transform:none; } }
+    .step-kicker { color:var(--muted); font-size:11px; text-transform:uppercase; letter-spacing:.14em; margin:0 0 12px; }
+    h2 { font-size:clamp(25px, 4vw, 34px); font-weight:550; letter-spacing:-.04em; margin:0 0 9px; }
+    .step-desc { color:var(--muted); font-size:13px; line-height:1.6; margin:0 0 32px; }
+    .field { margin:0 0 26px; }
+    label, .legend { display:block; font-size:14px; line-height:1.45; font-weight:600; margin-bottom:10px; }
+    .hint { color:var(--muted); font-size:12px; font-weight:400; display:block; margin-top:5px; }
+    input[type="text"], input[type="email"], input[type="url"], input[type="date"], textarea, select {
+      width:100%; border:1px solid #d9d8d1; border-radius:10px; background:#fff; color:var(--ink);
+      padding:14px 15px; font:inherit; font-size:14px; outline:none; transition:border .18s, box-shadow .18s;
+    }
+    textarea { min-height:100px; resize:vertical; line-height:1.55; }
+    input:focus, textarea:focus, select:focus { border-color:#77766f; box-shadow:0 0 0 3px rgba(25,25,25,.06); }
+    .choices { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+    .choice { position:relative; }
+    .choice input { position:absolute; opacity:0; pointer-events:none; }
+    .choice label {
+      display:flex; align-items:flex-start; gap:10px; min-height:48px; margin:0; padding:13px 14px;
+      border:1px solid #deddd7; border-radius:10px; color:#4f4e49; font-size:13px; font-weight:450; cursor:pointer;
+      transition:background .15s,border .15s,color .15s;
+    }
+    .choice label::before { content:""; flex:0 0 14px; width:14px; height:14px; border:1px solid #aaa99f; border-radius:4px; margin-top:1px; }
+    .choice input[type="radio"] + label::before { border-radius:50%; }
+    .choice input:checked + label { border-color:#262622; background:#f4f3ef; color:#191919; }
+    .choice input:checked + label::before { background:#262622; border-color:#262622; box-shadow:inset 0 0 0 3px #f4f3ef; }
+    .choice input:focus-visible + label { outline:2px solid #777; outline-offset:2px; }
+    .nav { display:flex; justify-content:space-between; gap:12px; margin-top:34px; }
+    button { border:0; border-radius:999px; padding:14px 22px; font:inherit; font-size:13px; font-weight:650; cursor:pointer; }
+    .next, .submit { background:var(--ink); color:#fff; margin-left:auto; }
+    .back { background:var(--soft); color:var(--ink); }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .required-note { color:var(--muted); font-size:11px; margin-top:20px; }
+    .success { display:none; text-align:center; padding:52px 20px; }
+    .success h2 { margin-bottom:14px; }
+    .success p { color:var(--muted); line-height:1.7; max-width:430px; margin:0 auto; font-size:14px; }
+    footer { display:flex; justify-content:space-between; gap:16px; margin-top:22px; color:var(--muted); font-size:11px; }
+    .small-print { line-height:1.6; max-width:470px; }
+    @media(max-width:560px) {
+      .shell { width:min(100% - 24px, 760px); padding-top:26px; }
+      header { margin-bottom:48px; }
+      .header-note { display:none; }
+      .choices { grid-template-columns:1fr; }
+      footer { flex-direction:column; }
+      .nav button { padding:13px 18px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header>
+      <div class="brand">GAROWA <span>VERTICAL</span></div>
+      <div class="header-note">Briefing de projeto · 2026</div>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">Desenvolvimento de site</p>
+      <h1>Vamos construir<br>essa presença digital.</h1>
+      <p class="lead">Este briefing é o primeiro passo para entender a Garowa Vertical, seus objetivos e o que o novo site precisa comunicar. As respostas vão orientar a estratégia, a experiência e a proposta do projeto.</p>
+      <div class="meta"><span>6 etapas</span><span>5–8 minutos</span><span>Respostas abertas e objetivas</span></div>
+    </section>
+
+    <div class="progress-wrap">
+      <div class="progress-top"><span id="stepLabel">ETAPA 01 DE 06</span><span id="percent">17%</span></div>
+      <div class="track"><div class="bar" id="progress"></div></div>
+    </div>
+
+    <form id="briefing" action="https://formsubmit.co/catasimonato@gmail.com" method="POST">
+      <input type="hidden" name="_subject" value="Novo briefing de site — Garowa Vertical">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_captcha" value="true">
+      <input type="hidden" name="_next" value="">
+      <input type="text" name="_honey" style="display:none" tabindex="-1" autocomplete="off">
+
+      <section class="step active">
+        <p class="step-kicker">01 / Empresa</p><h2>Primeiro, vamos falar sobre a Garowa.</h2>
+        <p class="step-desc">Queremos entender como a produtora se apresenta hoje e o que a torna única.</p>
+        <div class="field"><label for="contact_name">Seu nome <span class="hint">Quem está preenchendo este briefing?</span></label><input id="contact_name" name="Nome de quem responde" type="text" required placeholder="Nome e sobrenome"></div>
+        <div class="field"><label for="contact_email">Seu e-mail</label><input id="contact_email" name="E-mail de contato" type="email" required placeholder="voce@empresa.com"></div>
+        <div class="field"><label for="description">Como vocês definem hoje a Garowa Vertical?</label><textarea id="description" name="Como definem a Garowa Vertical" required placeholder="Conte um pouco sobre a produtora e seu trabalho."></textarea></div>
+        <div class="field"><label for="services">Quais são os principais serviços oferecidos?</label><textarea id="services" name="Principais serviços" placeholder="Ex.: produção de conteúdo, campanhas, branded content..."></textarea></div>
+        <div class="field"><label for="differential">Qual é o principal diferencial da Vertical em relação a outras produtoras?</label><textarea id="differential" name="Diferencial da produtora"></textarea></div>
+        <div class="field"><label for="audience">Quem vocês desejam atrair principalmente?</label><textarea id="audience" name="Público que desejam atrair" placeholder="Agências, marcas, empresas, artistas..."></textarea></div>
+        <div class="field"><label for="group">Como a Garowa Vertical se relaciona com a Garowa Company e as demais empresas do grupo?</label><textarea id="group" name="Relação com Garowa Company"></textarea></div>
+      </section>
+
+      <section class="step">
+        <p class="step-kicker">02 / Objetivos</p><h2>O que o site precisa alcançar?</h2>
+        <p class="step-desc">Aqui vamos identificar o papel do site na comunicação e no crescimento do negócio.</p>
+        <div class="field"><span class="legend">Qual é o principal objetivo do novo site?</span><div class="choices">
+          <div class="choice"><input id="goal1" type="radio" name="Objetivo principal" value="Apresentar a produtora" required><label for="goal1">Apresentar a produtora</label></div>
+          <div class="choice"><input id="goal2" type="radio" name="Objetivo principal" value="Exibir portfólio"><label for="goal2">Exibir portfólio</label></div>
+          <div class="choice"><input id="goal3" type="radio" name="Objetivo principal" value="Atrair novos clientes"><label for="goal3">Atrair novos clientes</label></div>
+          <div class="choice"><input id="goal4" type="radio" name="Objetivo principal" value="Gerar pedidos de orçamento"><label for="goal4">Gerar pedidos de orçamento</label></div>
+          <div class="choice"><input id="goal5" type="radio" name="Objetivo principal" value="Fortalecer posicionamento"><label for="goal5">Fortalecer posicionamento</label></div>
+          <div class="choice"><input id="goal6" type="radio" name="Objetivo principal" value="Outro"><label for="goal6">Outro</label></div>
+        </div></div>
+        <div class="field"><label for="current">O que o site atual não consegue comunicar ou resolver?</label><textarea id="current" name="Limitações do site atual"></textarea></div>
+        <div class="field"><label for="perception">Que percepção vocês gostariam de transmitir para alguém que acessa o site pela primeira vez?</label><textarea id="perception" name="Percepção desejada"></textarea></div>
+        <div class="field"><label for="action">Qual ação o visitante deveria realizar depois de conhecer a produtora?</label><textarea id="action" name="Ação esperada do visitante" placeholder="Entrar em contato, solicitar orçamento, conhecer projetos..."></textarea></div>
+        <div class="field"><span class="legend">O site também será usado em apresentações e prospecções comerciais?</span><div class="choices">
+          <div class="choice"><input id="sales1" type="radio" name="Uso comercial" value="Sim"><label for="sales1">Sim</label></div>
+          <div class="choice"><input id="sales2" type="radio" name="Uso comercial" value="Não"><label for="sales2">Não</label></div>
+          <div class="choice"><input id="sales3" type="radio" name="Uso comercial" value="Ainda não definido"><label for="sales3">Ainda não definido</label></div>
+        </div></div>
+      </section>
+
+      <section class="step">
+        <p class="step-kicker">03 / Portfólio e conteúdo</p><h2>O trabalho de vocês no centro.</h2>
+        <p class="step-desc">Vamos entender o volume de conteúdo e a melhor maneira de apresentar os projetos.</p>
+        <div class="field"><label for="categories">Quais tipos de produção devem ganhar destaque?</label><textarea id="categories" name="Tipos de produção em destaque" placeholder="Ex.: campanhas, Reels, branded content, videoclipes..."></textarea></div>
+        <div class="field"><label for="musthave">Quais projetos são indispensáveis no portfólio?</label><textarea id="musthave" name="Projetos indispensáveis"></textarea></div>
+        <div class="field"><span class="legend">Quantos projetos aproximadamente serão apresentados?</span><div class="choices">
+          <div class="choice"><input id="amount1" type="radio" name="Quantidade de projetos" value="Até 5" required><label for="amount1">Até 5</label></div>
+          <div class="choice"><input id="amount2" type="radio" name="Quantidade de projetos" value="De 5 a 10"><label for="amount2">De 5 a 10</label></div>
+          <div class="choice"><input id="amount3" type="radio" name="Quantidade de projetos" value="De 10 a 20"><label for="amount3">De 10 a 20</label></div>
+          <div class="choice"><input id="amount4" type="radio" name="Quantidade de projetos" value="Mais de 20"><label for="amount4">Mais de 20</label></div>
+          <div class="choice"><input id="amount5" type="radio" name="Quantidade de projetos" value="Ainda não definido"><label for="amount5">Ainda não definido</label></div>
+        </div></div>
+        <div class="field"><span class="legend">Cada projeto deve ter uma página própria com contexto, ficha técnica e créditos?</span><div class="choices">
+          <div class="choice"><input id="detail1" type="radio" name="Página individual de projetos" value="Sim"><label for="detail1">Sim</label></div>
+          <div class="choice"><input id="detail2" type="radio" name="Página individual de projetos" value="Não, apenas galeria"><label for="detail2">Não, apenas galeria</label></div>
+          <div class="choice"><input id="detail3" type="radio" name="Página individual de projetos" value="A definir"><label for="detail3">A definir</label></div>
+        </div></div>
+        <div class="field"><span class="legend">Vocês já possuem os materiais dos projetos organizados?</span><div class="choices">
+          <div class="choice"><input id="assets1" type="radio" name="Materiais disponíveis" value="Sim, tudo pronto"><label for="assets1">Sim, tudo pronto</label></div>
+          <div class="choice"><input id="assets2" type="radio" name="Materiais disponíveis" value="Parcialmente"><label for="assets2">Parcialmente</label></div>
+          <div class="choice"><input id="assets3" type="radio" name="Materiais disponíveis" value="Não"><label for="assets3">Não</label></div>
+        </div></div>
+        <div class="field"><label for="formats">Há vídeos em diferentes formatos e proporções? Quais?</label><textarea id="formats" name="Formatos de vídeo"></textarea></div>
+      </section>
+
+      <section class="step">
+        <p class="step-kicker">04 / Direção de arte</p><h2>Qual experiência queremos criar?</h2>
+        <p class="step-desc">As respostas ajudam a transformar o posicionamento da produtora em linguagem visual e navegação.</p>
+        <div class="field"><span class="legend">A identidade visual atual deve ser mantida ou existe abertura para evoluções na linguagem digital?</span><div class="choices">
+          <div class="choice"><input id="brand1" type="radio" name="Identidade visual" value="Manter integralmente" required><label for="brand1">Manter integralmente</label></div>
+          <div class="choice"><input id="brand2" type="radio" name="Identidade visual" value="Aberta a evoluções"><label for="brand2">Aberta a evoluções</label></div>
+          <div class="choice"><input id="brand3" type="radio" name="Identidade visual" value="Ainda não definido"><label for="brand3">Ainda não definido</label></div>
+        </div></div>
+        <div class="field"><label for="references">Quais sites, estúdios ou produtoras são referências para vocês? Se possível, compartilhem os links.</label><textarea id="references" name="Referências de sites" placeholder="Cole links e conte o que chama atenção em cada um."></textarea></div>
+        <div class="field"><label for="visual">O que deve ter mais protagonismo: os vídeos, a marca, os projetos ou a apresentação dos serviços?</label><textarea id="visual" name="Protagonismo visual"></textarea></div>
+        <div class="field"><label for="feel">Quais sensações ou características o site deve transmitir?</label><textarea id="feel" name="Sensações desejadas" placeholder="Ex.: contemporâneo, dinâmico, sofisticado, experimental..."></textarea></div>
+        <div class="field"><label for="avoid">Existe alguma estética ou experiência que vocês gostariam de evitar?</label><textarea id="avoid" name="Estéticas a evitar"></textarea></div>
+      </section>
+
+      <section class="step">
+        <p class="step-kicker">05 / Funcionalidades</p><h2>Como o site deve funcionar?</h2>
+        <p class="step-desc">Algumas escolhas técnicas influenciam diretamente o desenvolvimento, a hospedagem e a manutenção.</p>
+        <div class="field"><span class="legend">Como vocês imaginam atualizar o portfólio depois do lançamento?</span><div class="choices">
+          <div class="choice"><input id="cms1" type="radio" name="Atualização do portfólio" value="A própria equipe, por painel administrativo" required><label for="cms1">A própria equipe, por painel administrativo</label></div>
+          <div class="choice"><input id="cms2" type="radio" name="Atualização do portfólio" value="Solicitar atualização à pessoa responsável pelo site"><label for="cms2">Solicitar atualização à pessoa responsável pelo site</label></div>
+          <div class="choice"><input id="cms3" type="radio" name="Atualização do portfólio" value="Ainda não sabemos"><label for="cms3">Ainda não sabemos</label></div>
+        </div></div>
+        <div class="field"><span class="legend">Quais recursos são necessários? <span class="hint">Selecione todos os que se aplicam.</span></span><div class="choices">
+          <div class="choice"><input id="feature1" type="checkbox" name="Funcionalidades" value="Formulário de contato"><label for="feature1">Formulário de contato</label></div>
+          <div class="choice"><input id="feature2" type="checkbox" name="Funcionalidades" value="Botão de WhatsApp"><label for="feature2">Botão de WhatsApp</label></div>
+          <div class="choice"><input id="feature3" type="checkbox" name="Funcionalidades" value="Galeria de fotos"><label for="feature3">Galeria de fotos</label></div>
+          <div class="choice"><input id="feature4" type="checkbox" name="Funcionalidades" value="Vídeos incorporados"><label for="feature4">Vídeos incorporados</label></div>
+          <div class="choice"><input id="feature5" type="checkbox" name="Funcionalidades" value="Animações e interações"><label for="feature5">Animações e interações</label></div>
+          <div class="choice"><input id="feature6" type="checkbox" name="Funcionalidades" value="Outros idiomas"><label for="feature6">Outros idiomas</label></div>
+          <div class="choice"><input id="feature7" type="checkbox" name="Funcionalidades" value="Integração com CRM"><label for="feature7">Integração com CRM</label></div>
+          <div class="choice"><input id="feature8" type="checkbox" name="Funcionalidades" value="Integração com Garowa Company"><label for="feature8">Integração com Garowa Company</label></div>
+        </div></div>
+        <div class="field"><label for="otherfeatures">Existe alguma outra integração ou funcionalidade necessária?</label><textarea id="otherfeatures" name="Outras funcionalidades"></textarea></div>
+        <div class="field"><span class="legend">O site precisa de versão em outros idiomas?</span><div class="choices">
+          <div class="choice"><input id="lang1" type="radio" name="Idiomas" value="Somente português"><label for="lang1">Somente português</label></div>
+          <div class="choice"><input id="lang2" type="radio" name="Idiomas" value="Português e inglês"><label for="lang2">Português e inglês</label></div>
+          <div class="choice"><input id="lang3" type="radio" name="Idiomas" value="Outros idiomas"><label for="lang3">Outros idiomas</label></div>
+          <div class="choice"><input id="lang4" type="radio" name="Idiomas" value="A definir"><label for="lang4">A definir</label></div>
+        </div></div>
+      </section>
+
+      <section class="step">
+        <p class="step-kicker">06 / Planejamento</p><h2>Vamos alinhar os próximos passos.</h2>
+        <p class="step-desc">As últimas informações ajudam a dimensionar o escopo, o cronograma e o investimento.</p>
+        <div class="field"><label for="deadline">Existe uma data desejada para o lançamento?</label><input id="deadline" name="Data desejada para lançamento" type="text" placeholder="Ex.: março de 2027 / sem data definida"></div>
+        <div class="field"><label for="urgency">Há algum evento, campanha ou necessidade relacionado a esse prazo?</label><textarea id="urgency" name="Contexto do prazo"></textarea></div>
+        <div class="field"><span class="legend">A Garowa já possui um domínio registrado para o site?</span><div class="choices">
+          <div class="choice"><input id="domain1" type="radio" name="Domínio" value="Sim"><label for="domain1">Sim</label></div>
+          <div class="choice"><input id="domain2" type="radio" name="Domínio" value="Não"><label for="domain2">Não</label></div>
+          <div class="choice"><input id="domain3" type="radio" name="Domínio" value="Não sei"><label for="domain3">Não sei</label></div>
+        </div></div>
+        <div class="field"><label for="budget">Existe uma faixa de investimento prevista para o projeto?<span class="hint">Essa informação ajuda a adequar a proposta às necessidades e prioridades da produtora.</span></label>
+          <select id="budget" name="Faixa de investimento"><option value="">Selecione uma opção</option><option>Até R$ 2.000</option><option>R$ 2.000 a R$ 3.500</option><option>R$ 3.500 a R$ 5.000</option><option>R$ 5.000 a R$ 8.000</option><option>Acima de R$ 8.000</option><option>Ainda não definida</option></select>
+        </div>
+        <div class="field"><label for="approver">Quem será responsável pela aprovação do projeto?</label><input id="approver" name="Responsável pela aprovação" type="text" placeholder="Nome ou cargo"></div>
+        <div class="field"><label for="maintenance">Quem ficará responsável pela manutenção e atualização após o lançamento?</label><textarea id="maintenance" name="Responsável pela manutenção"></textarea></div>
+        <div class="field"><label for="anything">Tem alguma informação importante que não perguntamos?</label><textarea id="anything" name="Informações adicionais" placeholder="Fique à vontade para acrescentar o que considerar relevante."></textarea></div>
+        <div class="field"><label><input type="checkbox" required style="width:auto; margin-right:8px"> Concordo que as informações enviadas sejam utilizadas para elaboração da proposta deste projeto.</label></div>
+      </section>
+
+      <div class="nav">
+        <button type="button" class="back" id="back" style="visibility:hidden">Voltar</button>
+        <button type="button" class="next" id="next">Próxima etapa →</button>
+        <button type="submit" class="submit" id="submit" style="display:none">Enviar briefing ↗</button>
+      </div>
+      <p class="required-note">* Os campos de identificação e algumas perguntas são obrigatórios. As demais respostas podem ser preenchidas conforme as informações disponíveis.</p>
+    </form>
+
+    <section class="success" id="success">
+      <p class="eyebrow">Briefing concluído</p>
+      <h2>Obrigado por compartilhar.</h2>
+      <p>As respostas foram enviadas. Com essas informações, será possível estruturar uma proposta alinhada às necessidades da Garowa Vertical.</p>
+    </section>
+
+    <footer>
+      <div class="small-print">As informações deste formulário serão utilizadas exclusivamente para compreender o projeto e preparar uma proposta de desenvolvimento do site.</div>
+      <div>GAROWA VERTICAL · BRIEFING</div>
+    </footer>
+  </main>
+  <script>
+    const form = document.getElementById('briefing');
+    const steps = [...document.querySelectorAll('.step')];
+    const progress = document.getElementById('progress');
+    const stepLabel = document.getElementById('stepLabel');
+    const percent = document.getElementById('percent');
+    const back = document.getElementById('back');
+    const next = document.getElementById('next');
+    const submit = document.getElementById('submit');
+    let current = 0;
+
+    function showStep(index) {
+      current = index;
+      steps.forEach((step, i) => step.classList.toggle('active', i === current));
+      const value = Math.round(((current + 1) / steps.length) * 100);
+      progress.style.width = value + '%';
+      percent.textContent = value + '%';
+      stepLabel.textContent = `ETAPA ${String(current + 1).padStart(2, '0')} DE ${String(steps.length).padStart(2, '0')}`;
+      back.style.visibility = current === 0 ? 'hidden' : 'visible';
+      next.style.display = current === steps.length - 1 ? 'none' : 'inline-block';
+      submit.style.display = current === steps.length - 1 ? 'inline-block' : 'none';
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+    function validateCurrent() {
+      const fields = [...steps[current].querySelectorAll('input, textarea, select')];
+      for (const field of fields) {
+        if (field.required && !field.checkValidity()) {
+          field.reportValidity();
+          return false;
+        }
+      }
+      return true;
+    }
+    next.addEventListener('click', () => {
+      if (validateCurrent()) showStep(Math.min(current + 1, steps.length - 1));
+    });
+    back.addEventListener('click', () => showStep(Math.max(current - 1, 0)));
+    form.addEventListener('submit', (event) => {
+      if (!validateCurrent()) {
+        event.preventDefault();
+        return;
+      }
+      submit.disabled = true;
+      submit.textContent = 'Enviando...';
+    });
+    showStep(0);
+  </script>
+</body>
+</html>
